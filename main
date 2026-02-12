@@ -12,8 +12,7 @@ class Product:
         print(f'Цена со скидкой составляет {self.price}')
     def sell(self, amount):
         if amount > self.quantity:
-            print(f'Ошибка - на складе всего {self.quantity}')
-            return
+            raise ValueError(f'❌Ошибка - на складе всего {self.quantity}')
         self.quantity -= amount
         print(f'Продано {amount} штук, остаток на складе - {self.quantity}')
     def restock(self, amount):
@@ -26,16 +25,25 @@ class Product:
         print(f'количество на складе: {self.quantity}')
         print(f'категория товара: {self.category}')
 
-iphone11 = Product("Iphone 11", 35000, 13, "mobile")
-casio_gshock = Product("G-Shock 5600", 6000, 34, "watch")
-macbookpro = Product("Apple MacBook PRO m2", 150000, 3, "laptop")
+iphone11 = Product("Iphone 11", 35000, 130, "mobile")
+casio_gshock = Product("G-Shock 5600", 6000, 340, "watch")
+macbookpro = Product("Apple MacBook PRO m2", 150000, 377, "laptop")
 
 
 class ShopingCart:
     def __init__(self):
         self.items = []
     def add_product(self, product, quantity):
-        self.items.append([product, quantity])
+
+        for item in self.items:
+            if item[0] == product:
+                item[1] += quantity
+                print(f'Количество товаров {product.name} увеличено на {quantity}')
+                return
+        else:
+            self.items.append([product, quantity])
+
+
         print(f'✅ В корзину добавили {product.name}, в количестве {quantity} ')
 
     def info(self):
@@ -66,7 +74,40 @@ class ShopingCart:
                     print(f'✅ Количество товара "{product.name}" уменьшено на {quantity}')
                 return
 
-        print(f'❌ Товар "{product.name}" не найден в корзине')
+            print(f'❌ Товар "{product.name}" не найден в корзине')
+
+    def checkout(self):
+        try:
+            for item in self.items:
+                item[0].sell(item[1])
+            self.recieve()
+            self.items = []
+        except ValueError as e:
+            print(f"❌ Ошибка оформления заказа: {e}")
+            print("✅ Корзина сохранена, попробуйте ещё раз")
+
+    def recieve(self):
+        print('=' * 40)
+        print('🛒 ТОВАРНЫЙ ЧЕК:')
+        print('=' * 40)
+
+        total = 0
+        for item in self.items:
+            product = item[0]  # объект Product
+            quantity = item[1]  # количество
+            price = product.price * quantity
+            total += price
+            print(f'• {product.name} x {quantity} = {price} ₽')
+
+        print('=' * 40)
+        print(f'💰 ИТОГО: {total} ₽')
+        print('=' * 40)
+        print(f'СПАСИБО ЗА ПОКУПКУ! ЖДЁМ ВАС СНОВА')
+
+
+
+
+
 
 
 
@@ -75,6 +116,12 @@ class ShopingCart:
 
 cart1 = ShopingCart()
 cart1.add_product(macbookpro, 1)
-cart1.add_product(iphone11, 3)
-cart1.remove_product(iphone11, 1)
+cart1.add_product(macbookpro, 10)
+cart1.add_product(iphone11, 30)
+cart1.add_product(iphone11, 15)
+cart1.add_product(casio_gshock, 10)
+# cart1.remove_product(iphone11, 1)
+# cart1.add_product(casio_gshock, 3)
+cart1.info()
+cart1.checkout()
 cart1.info()
