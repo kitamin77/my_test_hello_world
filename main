@@ -44,11 +44,56 @@ class Product:
         print(f'цена товара: {self.price}')
         print(f'количество на складе: {self.quantity}')
         print(f'категория товара: {self.category}')
+    
 
-iphone11 = Product("Iphone 11", 35000, 130, "mobile")
-casio_gshock = Product("G-Shock 5600", 6000, 340, "watch")
-macbookpro = Product("Apple MacBook PRO m2", 150000, 377, "laptop")
 
+
+class Electronics(Product):
+    def __init__(self, name, price, quantity, category, months):
+        super().__init__(name, price, quantity, category)
+        self.warranty = months
+    @property
+    def warranty(self):
+        return self.__warranty
+    @warranty.setter
+    def warranty(self, new_warranty):
+        if new_warranty < 0:
+            raise ValueError("Гарантийный срок не может быть отрицательным")
+        self.__warranty = new_warranty
+    def info(self):
+        super().info()
+        print(f'гарантия на товар: {self.warranty}')
+
+class Book(Product):
+    def __init__(self, name, price, quantity, category, autor, pages):
+        super().__init__(name, price, quantity, category)
+        self.autor = autor
+        self.pages = pages
+
+    @property
+    def pages(self):
+        return self.__pages
+
+    @pages.setter
+    def pages(self, new_pages):
+        if new_pages <= 0:
+            raise ValueError('Количество страниц должно быть больше нуля')
+        self.__pages = new_pages
+    @property
+    def autor(self):
+        return self.__autor
+    @autor.setter
+    def autor(self, new_autor):
+        if not isinstance(new_autor, str):
+            raise ValueError('Имя автора должно быть строкой')
+        if not new_autor:
+            raise ValueError('Имя автора не может быть пустым')
+        self.__autor = new_autor
+
+    def info(self):
+        super().info()
+        print(f'Автор книги: {self.autor}')
+        print(f'Количество страниц: {self.pages}')
 
 class ShopingCart:
     def __init__(self):
@@ -100,13 +145,13 @@ class ShopingCart:
         try:
             for item in self.items:
                 item[0].sell(item[1])
-            self.recieve()
+            self.receive()
             self.items = []
         except ValueError as e:
             print(f"❌ Ошибка оформления заказа: {e}")
             print("✅ Корзина сохранена, попробуйте ещё раз")
 
-    def recieve(self):
+    def receive(self):
         print('=' * 40)
         print('🛒 ТОВАРНЫЙ ЧЕК:')
         print('=' * 40)
@@ -130,10 +175,17 @@ class ShopingCart:
 
 
 
+iphone11 = Product("Iphone 11", 35000, 130, "mobile")
+casio_gshock = Product("G-Shock 5600", 6000, 340, "watch")
+macbookpro = Product("Apple MacBook PRO m2", 150000, 377, "laptop")
 
+redmi_note = Electronics("Redmi NOTE", 25000, 23, "mobile", 12)
 
-
-
+fight_club = Book("Бойцовский клуб", 250, 300, 'book', 'Чак Паланик', 356)
+fight_club.info()
+fight_club.autor = "Хуй Говно и Муравей"
+fight_club.info()
+redmi_note.info()
 cart1 = ShopingCart()
 cart1.add_product(macbookpro, 1)
 cart1.add_product(macbookpro, 10)
@@ -144,7 +196,6 @@ cart1.add_product(casio_gshock, 10)
 # cart1.add_product(casio_gshock, 3)
 cart1.info()
 macbookpro.price = 9999
-iphone11.price = -123
+iphone11.price = 123
 cart1.info()
 cart1.checkout()
-cart1.info()
