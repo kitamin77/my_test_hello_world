@@ -1,0 +1,15 @@
+a = [1, 2, 3, 4, 2, 2, 3, 4]
+b = [2, 4, 3, 5, 4, 5]
+
+
+def array_diff(a, b):
+    test = set(b)
+    final_list = []
+    for n in range(0, len(a)):
+        if a[n] in test:
+            continue
+        final_list.append(a[n])
+    print(final_list)
+    return final_list
+
+array_diff(a, b)
